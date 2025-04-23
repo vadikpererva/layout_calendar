@@ -1,3 +1,64 @@
 body {
   margin: 0;
 }
+
+$day-size: 100px;
+$border-size: 1px;
+$gap-size: 1px;
+$day-color: #eee;
+$hover-color: pink;
+$text-color: black;
+$columns: 7;
+$padding: 10px;
+$font-size: 30px;
+$transition-time: 0.5s;
+
+.calendar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $gap-size;
+  width: calc(#{$columns} * (#{$day-size} + #{$gap-size}) - #{$gap-size} + 2 * #{$padding});
+  padding: 0 $padding;
+  margin: 0 auto;
+
+  &__day {
+    width: $day-size;
+    height: $day-size;
+    background: $day-color;
+    border: $border-size solid $text-color;
+    position: relative;
+    font-family: Arial, sans-serif;
+    transition: transform $transition-time, background $transition-time;
+
+    &::before {
+      content: '';
+      position: absolute;
+      font-size: $font-size;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: $text-color;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background: $hover-color;
+      transform: translateY(-20px);
+    }
+  }
+  @for $i from 1 through 31 {
+    &__day:nth-child(#{$i})::before {
+      content: "#{$i}";
+    }
+  }
+  @each $day, $index in (mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5, sun: 6) {
+    &--start-day-#{$day} &__day:first-child {
+      margin-left: calc(#{$index} * (#{$day-size} + #{$gap-size}));
+    }
+  }
+  @for $len from 28 through 31 {
+    &--month-length-#{$len} &__day:nth-child(n + #{$len + 1}) {
+      display: none;
+    }
+  }
+}
